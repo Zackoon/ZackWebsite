@@ -49,6 +49,9 @@ function ThreeJSScene() {
         scene.background = new THREE.Color("#E6C8A3")
         
         let modelPosition = 0
+        let model = null
+        
+        // note the parts of the model we are looking for are Plane.002, Plane.003, Plane.004
 
         const gltfLoader = new GLTFLoader()
         gltfLoader.load(
@@ -69,8 +72,35 @@ function ThreeJSScene() {
                 modelPosition = gltf.scene.position
                 house.add(gltf.scene)
                 console.log(gltf.scene)
+                model = gltf.scene
             },
         )
+
+        /**
+         * Cursor
+         */
+
+        const mouse = new THREE.Vector2()
+        window.addEventListener('mousemove', (e) =>
+        {
+            mouse.x = e.clientX/sizes.width * 2 - 1
+            mouse.y = - (e.clientY/sizes.height * 2 - 1)
+        })
+
+        /**
+         * Raycasting
+         */
+        const raycaster = new THREE.Raycaster()
+        let currentIntersect = null
+        
+
+        window.addEventListener('click', () => {
+            if(currentIntersect) {
+                if (currentIntersect.length) {
+                    console.log('clicked!')
+                }
+            }
+        })
 
         /**
          * Environment Mapping
@@ -170,6 +200,13 @@ function ThreeJSScene() {
         const tick = () =>
         {
             const elapsedTime = clock.getElapsedTime()
+            
+            // ray cast
+            raycaster.setFromCamera(mouse, camera)
+            if (model) {
+                currentIntersect = raycaster.intersectObject(model)
+            }
+            
 
             // update controls
             if (controls) {controls.update()} 
@@ -180,7 +217,7 @@ function ThreeJSScene() {
             window.requestAnimationFrame(tick)
         }
         tick()
-    }, [])
+    })
 
     return (
         <div ref={refContainer}></div>
