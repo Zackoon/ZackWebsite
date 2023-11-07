@@ -5,6 +5,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { useEffect, useRef } from 'react'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import gsap from 'gsap'
+import typefaceFont from '../fonts/optimer_regular.typeface.json?url'
+
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 
 function ThreeJSScene() {
@@ -36,26 +41,64 @@ function ThreeJSScene() {
         /**
          *  Loaders
          */
+        const fontLoader = new FontLoader()
+        fontLoader.load(
+            typefaceFont,
+            (font) => {
+                const textGeometry = new TextGeometry(
+                    "Welcome!",
+                    {
+                        font: font,
+                        size: 0.5,
+                        height: 0.2,
+                        curveSegments: 5,
+                        bevelEnabled: true,
+                        bevelThickness: 0.10,
+                        bevelSize: 0.01,
+                        bevelOffset: 0,
+                        bevelSegments: 2 
+                    }
+                )
+                // textGeometry.computeBoundingBox()
+                // textGeometry.translate(
+                //     - textGeometry.boundingBox.max.x * 0.5,
+                //     - textGeometry.boundingBox.max.y * 0.5,
+                //     - textGeometry.boundingBox.max.z * 0.5
+                // )
+                textGeometry.center()
+
+                const textMaterial = new THREE.MeshStandardMaterial({
+                    color: '#FFD700',
+                    metalness: 1,   // between 0 and 1
+                    roughness: 0.25,
+                })
+                const axis = new THREE.Vector3(0,1,0)
+                const text = new THREE.Mesh(textGeometry, textMaterial);
+                text.rotateOnAxis(axis, Math.PI/4)
+                text.position.y = 2.5
+                house.add(text)
+            }
+        )
+
         const cubeTextureLoader = new THREE.CubeTextureLoader()
         const environmentMapTexture = cubeTextureLoader.load([
-            './src/assets/EnvironmentMaps/Sunset/nx.png',
-            './src/assets/EnvironmentMaps/Sunset/px.png',
-            './src/assets/EnvironmentMaps/Sunset/py.png',
-            './src/assets/EnvironmentMaps/Sunset/ny.png',
-            './src/assets/EnvironmentMaps/Sunset/pz.png',
-            './src/assets/EnvironmentMaps/Sunset/nz.png',
+            './assets/EnvironmentMaps/Sunset/nx.png',
+            './assets/EnvironmentMaps/Sunset/px.png',
+            './assets/EnvironmentMaps/Sunset/py.png',
+            './assets/EnvironmentMaps/Sunset/ny.png',
+            './assets/EnvironmentMaps/Sunset/pz.png',
+            './assets/EnvironmentMaps/Sunset/nz.png',
         ]) // order matters
         scene.environment = environmentMapTexture
-        scene.background = new THREE.Color("#E6C8A3")
+        scene.background = new THREE.Color("#efdcc5")
         
         let modelPosition = 0
         let model = null
         
         // note the parts of the model we are looking for are Plane.002, Plane.003, Plane.004
-
         const gltfLoader = new GLTFLoader()
         gltfLoader.load(
-            "./src/assets/House.glb",
+            "./assets/House.glb",
             (gltf) => {
                 gltf.scene.traverse( function( node ) {
 
@@ -77,6 +120,20 @@ function ThreeJSScene() {
         )
 
         /**
+         * Points
+         */
+        const points = [
+            {
+                position: new THREE.Vector3(0.15,0.6,0.15),
+                element: document.querySelector(".point-0")
+            }
+        ]
+
+        
+        //const axesHelper = new THREE.AxesHelper( 5 );
+        // scene.add( axesHelper );
+
+        /**
          * Cursor
          */
 
@@ -93,11 +150,41 @@ function ThreeJSScene() {
         const raycaster = new THREE.Raycaster()
         let currentIntersect = null
         
-
+        let laptopClicked = false
         window.addEventListener('click', () => {
             if(currentIntersect) {
                 if (currentIntersect.length) {
-                    console.log('clicked!')
+                    for (const curr of currentIntersect) {
+                        if (curr.object.name === "Plane002" || curr.object.name === "Plane003" || curr.object.name === "Plane004") {
+                            if (laptopClicked === false) {
+                                gsap.to( camera, {
+                                    duration: 2,
+                                    zoom: 2,
+                                    onUpdate: () => {
+                                        console.log(curr.object.position)
+                                        camera.updateProjectionMatrix()
+                                        laptopClicked = true
+                                        points[0].element.classList.add('overlay')
+                                    }
+                                })
+                            }
+                            else {
+                                gsap.to( camera, {
+                                    duration: 2,
+                                    zoom: 1,
+                                    onUpdate: () => {
+                                        console.log(curr.object.position)
+                                        camera.updateProjectionMatrix()
+                                        laptopClicked = false
+                                        points[0].element.classList.remove('overlay')
+                                    }
+                                })
+                            }
+                            
+                        
+                            break; 
+                        }
+                    }
                 }
             }
         })
@@ -122,7 +209,7 @@ function ThreeJSScene() {
          */
 
         // should be ff8e61 tho
-        const ambientLight = new THREE.AmbientLight(0xffc5a6, 4)
+        const ambientLight = new THREE.AmbientLight(0xffc5a6, 1)
         house.add(ambientLight)
         //gui.addColor(ambientLight, "color")
 
@@ -143,13 +230,21 @@ function ThreeJSScene() {
         directionalLight.shadow.camera.top = 7
         directionalLight.shadow.camera.right = 7
         directionalLight.shadow.camera.bottom = - 7
+        directionalLight.shadow.camera.near = 2.5
         directionalLight.position.set(2, 2, 2)
         house.add(directionalLight)
 
+        // const directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5)
+        // scene.add(directionalLightHelper)
+
+        // const shadowCameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+        // shadowCameraHelper.visible = true
+        // scene.add(shadowCameraHelper)
         // Camera
         const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
         camera.position.set(2.5, 2, 2.5)
-        camera.lookAt(modelPosition)
+        // camera.rotateOnAxis(new THREE.Vector3(0,1,0), Math.PI/2)// doesn't work
+        camera.lookAt(modelPosition) // idt this even works lol
         house.add(camera)
 
 
@@ -158,7 +253,7 @@ function ThreeJSScene() {
             antialias: true
         })
         renderer.shadowMap.enabled = true
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap
+        renderer.shadowMap.type = THREE.VSMShadowMap
         renderer.setSize(sizes.width, sizes.height)
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
         renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -206,18 +301,47 @@ function ThreeJSScene() {
             if (model) {
                 currentIntersect = raycaster.intersectObject(model)
             }
-            
 
             // update controls
             if (controls) {controls.update()} 
+
+            // go through each point
+            for(const point of points) {
+                const screenPosition = point.position.clone()
+                screenPosition.project(camera)
+
+                raycaster.setFromCamera(screenPosition, camera)
+                const intersects = raycaster.intersectObjects(scene.children, true)
+                if(intersects.length === 0) {
+                    point.element.classList.add('visible')
+                } 
+                else {
+                    const intersectionDistance = intersects[0].distance
+                    const pointDistance = point.position.distanceTo(camera.position)
+                    if (intersectionDistance < pointDistance) {
+                        point.element.classList.remove('visible')
+                    }
+                    else {
+                        point.element.classList.add('visible')
+                    }
+                    
+                }
+
+                const translateX = screenPosition.x *  sizes.width* 0.5
+                point.element.style.transform = `translateX(${translateX}px)`
+                const translateY = -screenPosition.y *  sizes.height* 0.5
+                point.element.style.transform = `translateX(${translateX}px)`
+            }
 
             renderer.render(scene, camera)
 
             // Call tick again on the next frame
             window.requestAnimationFrame(tick)
         }
+
+        house.position.y = house.position.y - 0.3
         tick()
-    })
+    }, [])
 
     return (
         <div ref={refContainer}></div>
