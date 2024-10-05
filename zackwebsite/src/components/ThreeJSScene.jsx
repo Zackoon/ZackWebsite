@@ -68,9 +68,9 @@ function ThreeJSScene() {
                 textGeometry.center()
 
                 const textMaterial = new THREE.MeshStandardMaterial({
-                    color: '#FFD700',
+                    color: '#FF7043',
                     metalness: 1,   // between 0 and 1
-                    roughness: 0.25,
+                    roughness: 0.3,
                 })
                 const axis = new THREE.Vector3(0,1,0)
                 const text = new THREE.Mesh(textGeometry, textMaterial);
@@ -114,7 +114,7 @@ function ThreeJSScene() {
                 gltf.scene.rotateOnAxis(axis, -Math.PI/2)
                 modelPosition = gltf.scene.position
                 house.add(gltf.scene)
-                console.log(gltf.scene)
+                // console.log(gltf.scene)
                 model = gltf.scene
             },
         )
@@ -151,43 +151,60 @@ function ThreeJSScene() {
         let currentIntersect = null
         
         let laptopClicked = false
+        let cached_object_pos = new THREE.Vector3(0, 0, 0)
+        const exitButton = document.querySelector('.exit-button');
+        const zoom = (curr) => {
+            gsap.to( camera, {
+                duration: 2,
+                zoom: 2,
+                onUpdate: () => {
+                    // console.log(curr.object.position)
+                    camera.updateProjectionMatrix()
+                    laptopClicked = true
+                    cached_object_pos = curr
+                    points[0].element.classList.add('overlay')
+                }
+            })
+        }
+
+        const unzoom = (curr) => {
+            gsap.to( camera, {
+                duration: 2,
+                zoom: 1,
+                onUpdate: () => {
+                    // console.log(curr.object.position)
+                    camera.updateProjectionMatrix()
+                    laptopClicked = false
+                    points[0].element.classList.remove('overlay')
+                }
+            })
+        }
+        const handleClick = (curr) => {
+            if (laptopClicked === false) {
+                zoom(curr)
+             }
+             else {
+                 unzoom(curr)
+             }
+        }
+        // Add in the click event listeners
+        exitButton.addEventListener('click', () => {
+            handleClick(cached_object_pos)
+        })
+
         window.addEventListener('click', () => {
             if(currentIntersect) {
                 if (currentIntersect.length) {
                     for (const curr of currentIntersect) {
                         if (curr.object.name === "Plane002" || curr.object.name === "Plane003" || curr.object.name === "Plane004") {
-                            if (laptopClicked === false) {
-                                gsap.to( camera, {
-                                    duration: 2,
-                                    zoom: 2,
-                                    onUpdate: () => {
-                                        console.log(curr.object.position)
-                                        camera.updateProjectionMatrix()
-                                        laptopClicked = true
-                                        points[0].element.classList.add('overlay')
-                                    }
-                                })
-                            }
-                            else {
-                                gsap.to( camera, {
-                                    duration: 2,
-                                    zoom: 1,
-                                    onUpdate: () => {
-                                        console.log(curr.object.position)
-                                        camera.updateProjectionMatrix()
-                                        laptopClicked = false
-                                        points[0].element.classList.remove('overlay')
-                                    }
-                                })
-                            }
-                            
-                        
+                            handleClick(curr)
                             break; 
                         }
                     }
                 }
             }
         })
+                
 
         /**
          * Environment Mapping

@@ -9,21 +9,83 @@
   <body>
     <div id="root"></div>
     <div class="point point-0 visible">
-      <div class="label">1</div>
+      <div class="label"> <strong class="question">?</strong></div>
       <div class="text">Click on the laptop!</div>
-      <div class="info">Hey there, thanks for visiting my website -- more updates are to come! My name is Zack, and I'm a third year CS student at UC Berkeley. 
-      <br><br>  
-      I'm personally interested in exploring ways to use technology and data for organizations in the Tech-for-Social-Good space; however, I find interest in a lot of different domains! I have experience working as an EMT and a data science TA, which has made me realize how much I enjoy human-centric solutions and interaction. I have also stepped into full stack development, graphics development (I'm having fun with this website!), exploratory data analysis, data cleaning, and model-building. 
+      <div class="info">
+        <button class="exit-button small">close</button>
+        <h1>Hey!</h1>
+        Thanks for visiting my website -- more updates are to come! 
+        My name is Zack, and I'm a fourth year Computer Science and Data Science student at UC Berkeley.
+        I love looking into new topics, and I'm currently doing computer graphics, computer vision, and 
+        full stack development. 
+
+        <br><br>
+        This past summer, I worked as a <strong class="company">SWE intern at Amazon</strong>, 
+        designing and implementing a data pipeline, intermediate database, website backend, 
+        and a frontend dashboard that ingested 600 million records of Amazon.com pricing data 
+        by the end of my internship.
+        
+        <br><br>
+        Before that, I worked as a <strong class="company">SWE intern at Space of Mind</strong> (mental health startup) implementing a 
+        prototype of their patient chatbot, semantically chunking their transcript data into a vector database, 
+        and using LangChain to provide query context for GPT-3.5.
+    
       <br><br> 
-      In order of recency, I've worked on <a href="https://devpost.com/software/let-them-cook-9yb6za" target=”_blank”>Let Them Cook (link to description)</a>, which recommends recipes based on images of food in your fridge, and <a href="https://d2eifirn80iw3n.cloudfront.net/" target=”_blank”> DittyCal (this one is deployed!)</a> which recommends music based on left and right swipes, like Tinder.
+      <strong class="projects"><a href="https://github.com/Zackoon/ObjectColorSolidRenderer" target=”_blank”>What I'm currently building: An (eventually) open-source online visualizer for vision scientists to visualize 4D (or even N-D) object color solids.</a></strong>
       <br><br>
+      In order of recency, <strong class="projects">some projects I've worked on:</strong>
+      <hr>
+        <h2>
+          <a href="https://zackoon.github.io/TerrainWebsite/" target=”_blank”>Procedural Terrain Website (link)</a>
+        </h2>
+        <img src="/assets/TerrainWater.gif"></img>
+        <p>
+          Using OpenGL and shaders, I implemented moving water in the procedural terrain, complete with reflection and diffraction. Read more about the methodology in the link above (under the "Final" tab with the "Water" heading).
+        </p>
+      <hr>
+        <h2>
+          <a>PintOS, Building Functionality Into an Operating System</a>
+        </h2>
+        <p>
+          Implemented:
+          <ol>
+            <li>User programs: terminal argument passing, process control syscalls, and file operation syscalls</li>
+            <li>Threads: multithreading, strict priority scheduling, alarms</li>
+            <li>Filesystem: buffer cache implementation, an extensible file system similar to FFS, and subdirectory traversal/path resolution</li>
+          </ol>
+        </p>
+      <hr>
+        <h2>
+          <a href="https://devpost.com/software/let-them-cook-9yb6za" target=”_blank”>Let Them Cook (link to description)</a>
+        </h2>
+          <img src="/assets/letthemcook.jpeg" class="smaller"></img>
+          <p>
+            This application recommends recipes based on images of food in your fridge.
+          </p>
+      <hr>
+        <h2>
+          <a href="https://d2eifirn80iw3n.cloudfront.net/" target=”_blank”> DittyCal (this one is deployed!)</a> 
+        </h2>
+          <img src="/assets/dittycal.gif"></img>
+          <p>
+            Here, we recommend music based on left and right swipes, like Tinder.
+          </p>
+      <hr>
+      <h2>Addendum:</h2>
       You can also find <a href="https://linkedin.com/in/zackary-oon" target=”_blank”>my Linkedin here</a>, and <a href="https://github.com/Zackoon" target=”_blank”>my Github here.</a>
       <br><br>
       What I'm currently learning: Volleyball, Blender, Three.js, and Mandarin!
       <br><br>
-      (Note, to go back, you'll need to click the laptop again)
+      <strong>(Note, to go back, you'll need to click the laptop again)</strong>
       <br><br> 
-      You can also pan the camera by pressing shift and dragging your mouse (after leaving this overlay), and rotate the camera by dragging your mouse.
+      You can (after leaving this overlay):
+          <ul>
+            <Li>rotate the camera by dragging your mouse</Li>
+            <li>pan the camera by pressing shift and dragging your mouse</li>
+            <li>zoom in/out by scrolling up/down</li>
+          </ul>
+      
+      <button class="exit-button large">close</button>
       </div>
     </div>
     <script type="module" src="/src/main.jsx"></script>

@@ -75,6 +75,7 @@ html, body {
 }
 
 .point.overlay .info {
+  margin-top: -10%;
   padding: 15%;
   opacity: 1;
   color: #ffffff;
@@ -86,7 +87,7 @@ html, body {
     1px -1px 0 #000,
     -1px 1px 0 #000,
     1px 1px 0 #000; 
-  max-height: 100%;
+  max-height: 120%;
   overflow-y: scroll;
   box-sizing: border-box;
 }
@@ -101,4 +102,50 @@ a {
     -1px 1px 0 #000,
     1px 1px 0 #000; 
 
+}
+
+strong a {
+  font-weight: 900!
+}
+
+img {
+  border-radius: 10px
+}
+
+.smaller {
+  height: 20%;
+  width: 20%;
+}
+
+.company {
+  color: orange;
+}
+
+.projects {
+  color: lightblue;
+}
+
+.question {
+  color: rgb(255, 255, 255);
+}
+
+button {
+  background-color: lightblue;
+  border-radius: 10px;
+  color: black;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.large {
+  padding: 10px;
+  font-size: 16px;
+  margin: 4px 2px;
+}
+
+.small {
+  margin: 2px 1px;
+  padding: 5px;
+  font-size: 12px;
 }
