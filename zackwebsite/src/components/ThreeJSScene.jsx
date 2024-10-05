@@ -152,7 +152,7 @@ function ThreeJSScene() {
         
         let laptopClicked = false
         let cached_object_pos = new THREE.Vector3(0, 0, 0)
-        const exitButton = document.querySelector('.exit-button');
+        const exitButtons = document.querySelectorAll('.exit-button');
         const zoom = (curr) => {
             gsap.to( camera, {
                 duration: 2,
@@ -188,8 +188,8 @@ function ThreeJSScene() {
              }
         }
         // Add in the click event listeners
-        exitButton.addEventListener('click', () => {
-            handleClick(cached_object_pos)
+        exitButtons.forEach((exitButton) => {
+            exitButton.addEventListener('click', () => handleClick(cached_object_pos))
         })
 
         window.addEventListener('click', () => {
